@@ -4,28 +4,49 @@ var bodyParser = require('body-parser')
 var PouchDB = require('pouchdb')
 PouchDB.plugin(require("pouchdb-find"))
 var db = new PouchDB('testdb')
+var cookieParser = require('cookie-parser')
 
 const {v4: uuidv4} = require("uuid")
 
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const { waitForDebugger } = require("inspector")
 const io = new Server(server);
 
 
 app.use(express.static('static'))
 app.use(bodyParser.json());
+app.use(cookieParser())
 
 
 io.on("connection", (socket) => {
+    var user;
     socket.on('message', (data) => {
         io.emit('message', data)
-        console.log(data)
+        // find all here satus is offline and send to each of those email with nodemailer
+        db.find
+    })
+    socket.on('join', (data) => {
+         db.find({
+             selector: {email: data.email},
+             fields: ['_id']
+         }).then((data) => {
+            if (data.docs.length) {
+             user = data.docs[0]   
+             db.get(user._id).then((data) => {
+                 data.status = true
+             }) 
+            }
+         })
+    })
+    socket.on('disconnect', () => {
+        user.status = false
     })
 })
 
 /**
- * 
+ *
  app.get("/", (req,res) => {
      res.sendfile("test_templates/index.html")
  })
@@ -40,21 +61,20 @@ app.post("/login", (req,res) => {
        nodify: req.body.nodify,
        status: false
     }
-    db.find({
-        selector: {email: req.body.email},
-        fields: []
-    }).then((data) => {
-        if (!data.docs.length){
-            db.put(payload, function callback(err, result) {
-            if (!err){
-                console.log("user was put in db")
-            }
-            else {
-                console.log(err)
-            }
-        })
-        }
-    })
+     db.find({
+         selector: {email: req.body.email},
+         fields: []
+     }).then((data) => {
+         if (!data.docs.length){
+             db.put(payload, function callback(err, result) {
+             if (!err){
+                 console.log("user was put in db")
+             }
+         }).catch((err) => {
+             console.log(err)
+         })
+         }
+     })
     res.send({"status": "success"})
 })
 
