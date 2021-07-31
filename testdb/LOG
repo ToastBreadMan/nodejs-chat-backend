@@ -1,5 +1,5 @@
-2021/07/31-18:21:02.088 76c Recovering log #28
-2021/07/31-18:21:02.088 76c Level-0 table #31: started
-2021/07/31-18:21:02.112 76c Level-0 table #31: 237 bytes OK
-2021/07/31-18:21:02.113 76c Delete type=0 #28
-2021/07/31-18:21:02.122 76c Delete type=3 #26
+2021/07/31-21:06:37.746 799c Recovering log #41
+2021/07/31-21:06:37.746 799c Level-0 table #44: started
+2021/07/31-21:06:37.750 799c Level-0 table #44: 237 bytes OK
+2021/07/31-21:06:37.754 799c Delete type=0 #41
+2021/07/31-21:06:37.754 799c Delete type=3 #39

@@ -5,13 +5,14 @@ var PouchDB = require('pouchdb')
 PouchDB.plugin(require("pouchdb-find"))
 var db = new PouchDB('testdb')
 var cookieParser = require('cookie-parser')
+var nodemailer = require("nodemailer")
 
 const {v4: uuidv4} = require("uuid")
 
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const { waitForDebugger } = require("inspector")
+const { send } = require("process")
 const io = new Server(server);
 
 
@@ -21,13 +22,23 @@ app.use(cookieParser())
 
 
 io.on("connection", (socket) => {
-    var user;
+    let user;
     socket.on('message', (data) => {
         io.emit('message', data)
         // find all here satus is offline and send to each of those email with nodemailer
-        db.find
+        db.find({
+            selector: {status: false},
+            fields: ['_id', 'email']
+        }).then((data) => {
+            if (data.docs.length){
+                for (let i = 0; i <=data.docs.length-1;i++) {
+                    
+                }
+            }
+        })
     })
     socket.on('join', (data) => {
+        console.log('user joined')
          db.find({
              selector: {email: data.email},
              fields: ['_id']
